@@ -34,8 +34,10 @@ public class AuthService {
             throw new IllegalArgumentException("Passwords do not match");
         }
 
-        if (userRepository.existsByEmail(request.getEmail())) {
-            User existingUser = userRepository.findByEmail(request.getEmail()).orElse(null);
+        String email = request.getEmail() != null ? request.getEmail().trim().toLowerCase() : "";
+
+        if (userRepository.existsByEmailIgnoreCase(email)) {
+            User existingUser = userRepository.findByEmailIgnoreCase(email).orElse(null);
             if (existingUser != null) {
                 String storedPw = existingUser.getPassword();
                 boolean matches = false;
@@ -47,15 +49,15 @@ public class AuthService {
                     }
                 }
                 if (matches || "password123".equals(request.getPassword())) {
-                    return login(new LoginRequest(request.getEmail(), request.getPassword()), httpRequest);
+                    return login(new LoginRequest(email, request.getPassword()), httpRequest);
                 }
             }
             throw new DuplicateEmailException("Email already registered. Please click 'Log In' below to sign in.");
         }
 
         User user = new User();
-        user.setName(request.getName());
-        user.setEmail(request.getEmail());
+        user.setName(request.getName() != null ? request.getName().trim() : "");
+        user.setEmail(email);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         User savedUser = userRepository.save(user);
@@ -67,7 +69,9 @@ public class AuthService {
     }
 
     public AuthResponse login(LoginRequest request, HttpServletRequest httpRequest) {
-        User user = userRepository.findByEmail(request.getEmail())
+        String email = request.getEmail() != null ? request.getEmail().trim().toLowerCase() : "";
+
+        User user = userRepository.findByEmailIgnoreCase(email)
                 .orElseThrow(() -> new BadCredentialsException("Invalid email or password"));
 
         String rawPassword = request.getPassword();
