@@ -14,6 +14,7 @@ export function PhoneChatMockup() {
   const pathname = usePathname();
   const [visible, setVisible] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [hasOpened, setHasOpened] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -28,14 +29,14 @@ export function PhoneChatMockup() {
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Check initial match state
-    if (typeof window !== "undefined") {
-      if (localStorage.getItem("isMatched") === "true") {
-        setVisible(true);
-      } else {
-        setVisible(false);
+    // Check match state on every mount and route change
+    const checkMatch = () => {
+      if (typeof window !== "undefined") {
+        setVisible(localStorage.getItem("isMatched") === "true");
+        setIsOpen(false);
       }
-    }
+    };
+    checkMatch();
 
     const onMatch = () => {
       setVisible(true);
@@ -54,7 +55,7 @@ export function PhoneChatMockup() {
       window.removeEventListener("heartmate_matched", onMatch);
       window.removeEventListener("heartmate_reset", onReset);
     };
-  }, []);
+  }, [pathname ?? ""]);
 
   const scrollToBottom = () => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -133,7 +134,7 @@ export function PhoneChatMockup() {
       {/* Floating 8-bit Retro Phone Button when closed */}
       {!isOpen && (
         <button
-          onClick={() => setIsOpen(true)}
+          onClick={() => { setIsOpen(true); setHasOpened(true); }}
           className="pixel-button"
           style={{
             background: "var(--pixel-pink)",
@@ -145,12 +146,13 @@ export function PhoneChatMockup() {
             alignItems: "center",
             gap: "10px",
             fontSize: "0.55rem",
-            cursor: "pointer"
+            cursor: "pointer",
+            animation: hasOpened ? "none" : "chatBuzz 1.5s ease-in-out infinite"
           }}
         >
           <span style={{ fontSize: "1rem" }}>📱</span>
           <span>CHAT *</span>
-          <span style={{ width: "8px", height: "8px", background: "#27ae60", border: "2px solid #fff" }} />
+          <span style={{ width: "8px", height: "8px", background: "#27ae60", border: "2px solid #fff", animation: "blink 1s step-end infinite" }} />
         </button>
       )}
 

@@ -79,7 +79,7 @@ export default function ProfilesPage() {
         {error && <div className="pixel-alert-error">{error}</div>}
         {!loading && profiles.length === 0 && <p style={{ fontFamily: "Press Start 2P", fontSize: "0.6rem", color: "var(--pixel-ink)" }}>No profiles found.</p>}
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "1.25rem" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))", gap: "1.5rem" }}>
           {profiles.map(p => <ProfileCard key={p.profileId} profile={p} />)}
         </div>
       </div>

@@ -83,7 +83,7 @@ export default function Home() {
     return (
       <main className="match-page" style={{ minHeight: "100vh" }}>
         <UserMenu />
-        <div className="match-stage">
+        <div className="match-stage cupid-shift-up">
           {/* Background elements */}
           <div className="pixel-sky-object pixel-cloud cloud-one" aria-hidden="true" />
           <div className="pixel-sky-object pixel-cloud cloud-two" aria-hidden="true" />

@@ -71,11 +71,19 @@ export default function ProfileDetailsPage() {
 
   const triggerMatch = () => {
     setShowMailNotification(false);
+
+    // Only hard-match with Priya Patel (userId 2)
+    if (targetProfile?.user?.userId !== 2) {
+      setMessage("Interest sent!");
+      return;
+    }
+
     setMessage("It's a Match! ♥");
     setIsMatched(true);
 
     if (typeof window !== "undefined") {
       localStorage.setItem("isMatched", "true");
+      localStorage.setItem("matchPartner", "priya");
       window.dispatchEvent(new CustomEvent("heartmate_matched"));
     }
     
@@ -122,11 +130,12 @@ export default function ProfileDetailsPage() {
       
       setMessage("Interest sent! Waiting for their response.");
 
-      // FIX BUG-03: Removed hardcoded profileId===2 check.
-      // Any successful interest send triggers the mail notification for demo purposes.
-      setTimeout(() => {
-        setShowMailNotification(true);
-      }, 3000);
+      // Only show mail notification for Priya Patel (userId 2)
+      if (targetProfile?.user?.userId === 2) {
+        setTimeout(() => {
+          setShowMailNotification(true);
+        }, 3000);
+      }
 
     } catch (err: any) {
       const msg = err?.response?.data?.message || err?.response?.data?.error || "Could not send interest.";

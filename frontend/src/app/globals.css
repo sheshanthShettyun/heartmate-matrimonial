@@ -420,6 +420,10 @@ body {
 .cupid-left { left: 4%; bottom: 24%; animation-delay: 0s; }
 .cupid-right { right: 4%; bottom: 24%; animation-delay: 1.7s; }
 
+.cupid-shift-up .cupid-left { bottom: 36%; }
+.cupid-shift-up .cupid-right { bottom: 36%; }
+.cupid-shift-up .cupid-physics-wrapper { opacity: 0.3 !important; }
+
 .cupid-left .pixel-cupid { transform: scaleX(-1); }
 
 /* ===== CUPID STRING ===== */
@@ -451,6 +455,24 @@ body {
   25% { transform: translateY(-14px) rotate(1.5deg); }
   50% { transform: translateY(-8px) rotate(-1deg); }
   75% { transform: translateY(-12px) rotate(1deg); }
+}
+
+@keyframes chatBuzz {
+  0%, 100% { transform: translate(0, 0); }
+  10% { transform: translate(-2px, -1px); }
+  20% { transform: translate(2px, 1px); }
+  30% { transform: translate(-1px, 2px); }
+  40% { transform: translate(1px, -1px); }
+  50% { transform: translate(-2px, 0); }
+  60% { transform: translate(2px, 1px); }
+  70% { transform: translate(-1px, -1px); }
+  80% { transform: translate(1px, 2px); }
+  90% { transform: translate(-2px, 1px); }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
 }
 
 /* ===== PIXEL SPARKS ===== */
@@ -532,8 +554,9 @@ body {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 1rem;
-  min-height: 168px;
+  gap: 1.25rem;
+  min-height: 220px;
+  padding: 1.25rem;
   overflow: hidden;
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.72), rgba(255, 214, 226, 0.52)),
@@ -560,31 +583,32 @@ body {
 }
 
 .profile-card-name {
-  margin: 0 0 0.55rem;
+  margin: 0 0 0.65rem;
   color: var(--pixel-pink-deep);
   font-family: "Press Start 2P", monospace;
-  font-size: 0.64rem;
+  font-size: 0.8rem;
   line-height: 1.7;
 }
 
 .profile-card-meta {
   color: var(--pixel-ink);
   font-family: "Press Start 2P", monospace;
-  font-size: 0.42rem;
+  font-size: 0.52rem;
   line-height: 2;
 }
 
 .profile-card-about {
   display: -webkit-box;
-  margin-top: 0.35rem;
+  margin-top: 0.45rem;
   overflow: hidden;
   opacity: 0.72;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
+  font-size: 0.5rem;
 }
 
 .profile-card-action {
-  margin-top: 0.7rem;
+  margin-top: 0.9rem;
 }
 
 .profile-detail-card {

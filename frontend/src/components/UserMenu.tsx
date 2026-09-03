@@ -53,21 +53,6 @@ export function UserMenu() {
             </button>
           )}
 
-          <button 
-            className="user-menu-item" 
-            style={{ color: "#e74c3c" }}
-            onClick={() => {
-              if (typeof window !== "undefined") {
-                localStorage.removeItem("isMatched");
-                window.dispatchEvent(new CustomEvent("heartmate_reset"));
-              }
-              setOpen(false);
-              router.push("/profiles/2");
-            }}
-          >
-            Reset Demo 🔄
-          </button>
-
           <button className="user-menu-item" style={{ color: "#c0392b", fontWeight: "bold" }} onClick={() => logout()}>
             🚪 Logout
           </button>
