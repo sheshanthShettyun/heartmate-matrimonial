@@ -41,9 +41,6 @@ export function UserMenu() {
             min="1"
             style={{ fontSize: "0.4rem", minHeight: 36, padding: "0 0.5rem", marginBottom: "0.75rem" }}
           />
-          <button className="user-menu-item" onClick={() => { router.push("/register"); setOpen(false); }}>
-            Register / Add User
-          </button>
           <button className="user-menu-item" onClick={() => go("/edit-profile")}>
             Edit Profile
           </button>
