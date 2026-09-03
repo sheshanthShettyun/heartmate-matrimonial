@@ -191,7 +191,7 @@ export function AuthForm({ initialMode }: AuthFormProps) {
                   <button
                     type="button"
                     className="pixel-link"
-                    onClick={() => alert("Demo Hint: Use sriyaan@example.com / password123")}
+                    onClick={() => alert("Password reset is not available in this demo.")}
                   >
                     Forgot Password?
                   </button>

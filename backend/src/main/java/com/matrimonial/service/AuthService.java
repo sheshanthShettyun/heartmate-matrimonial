@@ -37,21 +37,6 @@ public class AuthService {
         String email = request.getEmail() != null ? request.getEmail().trim().toLowerCase() : "";
 
         if (userRepository.existsByEmailIgnoreCase(email)) {
-            User existingUser = userRepository.findByEmailIgnoreCase(email).orElse(null);
-            if (existingUser != null) {
-                String storedPw = existingUser.getPassword();
-                boolean matches = false;
-                if (storedPw != null) {
-                    if (storedPw.startsWith("$2a$") || storedPw.startsWith("$2b$")) {
-                        matches = passwordEncoder.matches(request.getPassword(), storedPw);
-                    } else {
-                        matches = request.getPassword().equals(storedPw);
-                    }
-                }
-                if (matches || "password123".equals(request.getPassword())) {
-                    return login(new LoginRequest(email, request.getPassword()), httpRequest);
-                }
-            }
             throw new DuplicateEmailException("Email already registered. Please click 'Log In' below to sign in.");
         }
 
@@ -76,32 +61,14 @@ public class AuthService {
 
         String rawPassword = request.getPassword();
         String storedPassword = user.getPassword();
-        boolean matches = false;
 
-        if (storedPassword != null && !storedPassword.isBlank()) {
-            if (storedPassword.startsWith("$2a$") || storedPassword.startsWith("$2b$") || storedPassword.startsWith("$2y$")) {
-                try {
-                    matches = passwordEncoder.matches(rawPassword, storedPassword);
-                } catch (Exception e) {
-                    matches = false;
-                }
-            } else {
-                matches = rawPassword.equals(storedPassword);
-            }
-        }
-
-        // Demo seed account fallback: allow "password123" for any seed account
-        if (!matches && "password123".equals(rawPassword)) {
-            matches = true;
-        }
-
-        if (!matches) {
+        if (storedPassword == null || storedPassword.isBlank()) {
             throw new BadCredentialsException("Invalid email or password");
         }
 
-        // Update stored password to valid BCrypt hash
-        user.setPassword(passwordEncoder.encode(rawPassword));
-        userRepository.save(user);
+        if (!passwordEncoder.matches(rawPassword, storedPassword)) {
+            throw new BadCredentialsException("Invalid email or password");
+        }
 
         setAuthenticationInContext(user, httpRequest);
 

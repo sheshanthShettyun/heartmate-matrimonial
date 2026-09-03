@@ -1,12 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { profileApi, Profile } from "@/lib/api";
 import { ProfileCard } from "@/components/ProfileCard";
 import { PixelDropdown } from "@/components/PixelDropdown";
 import { PixelButton } from "@/components/PixelButton";
+import { UserMenu } from "@/components/UserMenu";
 
 export default function ProfilesPage() {
+  const router = useRouter();
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -46,8 +49,14 @@ export default function ProfilesPage() {
 
   return (
     <main className="match-page">
+      <UserMenu />
       <div className="match-stage" style={{ display: "block", padding: "2rem clamp(1rem, 4vw, 4rem)" }}>
-        <h1 className="pixel-page-title">Browse Profiles</h1>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
+          <PixelButton variant="secondary" onClick={() => router.push("/")}>
+            ← Back to Catalog
+          </PixelButton>
+          <h1 className="pixel-page-title" style={{ margin: 0 }}>Browse Profiles</h1>
+        </div>
 
         <div className="pixel-border pixel-card" style={{ marginBottom: "1.5rem" }}>
           <form onSubmit={handleSearch} style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem", alignItems: "flex-end" }}>

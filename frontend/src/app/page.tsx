@@ -3,8 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { PixelDropdown } from "@/components/PixelDropdown";
-import { PixelInput } from "@/components/PixelInput";
-import { PixelTextarea } from "@/components/PixelTextarea";
+
 import { PixelButton } from "@/components/PixelButton";
 import { profileApi, Profile } from "@/lib/api";
 import { ProfileCard } from "@/components/ProfileCard";
@@ -28,7 +27,7 @@ const genderOptions = [
   { value: "Female", label: "Female" },
 ];
 
-type Stage = "landing" | "results" | "create";
+type Stage = "landing" | "results";
 
 export default function Home() {
   const [stage, setStage] = useState<Stage>("landing");
@@ -39,14 +38,6 @@ export default function Home() {
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
-  // Create profile fields
-  const [userId, setUserId] = useState("");
-  const [age, setAge] = useState("25");
-  const [gender, setGender] = useState("Male");
-  const [city, setCity] = useState("");
-  const [education, setEducation] = useState("");
-  const [occupation, setOccupation] = useState("");
-  const [about, setAbout] = useState("");
   const [message, setMessage] = useState("");
 
   // Search form → check profiles
@@ -76,7 +67,7 @@ export default function Home() {
       if (filtered.length > 0) {
         setStage("results");
       } else {
-        setStage("create");
+        setMessage("No matches found. Try different filters!");
       }
     } catch {
       setError("Could not connect to backend. Make sure it's running on localhost:8080");
@@ -85,30 +76,7 @@ export default function Home() {
     }
   };
 
-  // Create profile
-  const handleCreateProfile = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setMessage("");
-    if (!userId) { setError("Please enter your User ID"); return; }
-    localStorage.setItem("userId", userId);
-    try {
-      await profileApi.create(parseInt(userId), {
-        age: parseInt(age),
-        gender,
-        city,
-        education,
-        occupation,
-        about,
-      });
-      setMessage("Profile created! Loading matches...");
-      const res = await profileApi.getAll();
-      setProfiles(res.data);
-      setStage("results");
-    } catch (err: any) {
-      setError(err.response?.data?.message || "Failed to create profile");
-    }
-  };
+
 
   // ===== Results =====
   if (stage === "results") {
@@ -156,56 +124,7 @@ export default function Home() {
     );
   }
 
-  // ===== Create Profile =====
-  if (stage === "create") {
-    const ageOpts = Array.from({ length: 50 }, (_, i) => ({
-      value: String(i + 18),
-      label: String(i + 18),
-    }));
 
-    return (
-      <main className="match-page">
-        <UserMenu />
-        <div className="match-stage">
-          <PhysicsCupid side="left" />
-          <PhysicsCupid side="right" />
-          <section className="match-content">
-            <h1 className="pixel-title">
-              Create Your
-              <span>Profile</span>
-            </h1>
-            <p className="pixel-copy">
-              No profiles yet!<br />Be the first to join.
-            </p>
-            <div className="heart-divider" aria-hidden="true">♥</div>
-            {message && <div className="pixel-alert-success">{message}</div>}
-            {error && <div className="pixel-alert-error">{error}</div>}
-            <form className="match-form pixel-border" onSubmit={handleCreateProfile}>
-              <PixelInput label="Your User ID" placeholder="e.g. 1" value={userId} onChange={e => setUserId(e.target.value)} type="number" min="1" required />
-              <div className="form-sentence">
-                <span className="form-label">I am</span>
-                <div className="form-age-row">
-                  <PixelDropdown value={age} onChange={setAge} placeholder="25" options={ageOpts} />
-                  <span className="form-label-inline">years old,</span>
-                </div>
-                <span className="form-label">a</span>
-                <PixelDropdown value={gender} onChange={setGender} placeholder="Gender" options={genderOptions} />
-                <span className="form-label">living in</span>
-              </div>
-              <PixelInput placeholder="City" value={city} onChange={e => setCity(e.target.value)} required />
-              <PixelInput label="Education" placeholder="e.g. B.Tech" value={education} onChange={e => setEducation(e.target.value)} />
-              <PixelInput label="Occupation" placeholder="e.g. Software Engineer" value={occupation} onChange={e => setOccupation(e.target.value)} />
-              <PixelTextarea label="About you" placeholder="Tell something about yourself..." value={about} onChange={e => setAbout(e.target.value)} rows={3} />
-              <PixelButton type="submit">Create Profile</PixelButton>
-              <PixelButton variant="secondary" type="button" onClick={() => setStage("landing")} style={{ marginLeft: "0.5rem" }}>
-                Back
-              </PixelButton>
-            </form>
-          </section>
-        </div>
-      </main>
-    );
-  }
 
   // ===== Landing =====
   return (
@@ -245,6 +164,8 @@ export default function Home() {
 
           <form className="match-form pixel-border" onSubmit={handleSearch}>
             {error && <div className="pixel-alert-error" style={{ marginBottom: "1rem" }}>{error}</div>}
+            {/* FIX ISSUE-11: message was set but never rendered in landing stage */}
+            {message && <div className="pixel-alert-error" style={{ marginBottom: "1rem" }}>{message}</div>}
             <div className="form-sentence">
               <span className="form-label">I&apos;m looking for a</span>
               <PixelDropdown value={lookingFor} onChange={setLookingFor} placeholder="Select" options={lookingForOptions} />

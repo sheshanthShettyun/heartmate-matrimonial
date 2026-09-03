@@ -5,6 +5,7 @@ import com.matrimonial.exception.DuplicateEmailException;
 import com.matrimonial.exception.UserNotFoundException;
 import com.matrimonial.repository.InterestRepository;
 import com.matrimonial.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,10 +16,12 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final InterestRepository interestRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, InterestRepository interestRepository) {
+    public UserService(UserRepository userRepository, InterestRepository interestRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.interestRepository = interestRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public User createUser(User user) {
@@ -31,6 +34,7 @@ public class UserService {
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new DuplicateEmailException("Email already exists: " + user.getEmail());
         }
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 

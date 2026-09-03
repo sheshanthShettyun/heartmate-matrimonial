@@ -122,15 +122,15 @@ export default function ProfileDetailsPage() {
       
       setMessage("Interest sent! Waiting for their response.");
 
-      // Hardcoded match logic: only "match" if sending interest to Profile 2 (Priya Patel)
-      if (targetProfile!.profileId === 2) {
-        setTimeout(() => {
-          setShowMailNotification(true);
-        }, 3000);
-      }
+      // FIX BUG-03: Removed hardcoded profileId===2 check.
+      // Any successful interest send triggers the mail notification for demo purposes.
+      setTimeout(() => {
+        setShowMailNotification(true);
+      }, 3000);
 
-    } catch {
-      setError("Could not send interest. Check backend.");
+    } catch (err: any) {
+      const msg = err?.response?.data?.message || err?.response?.data?.error || "Could not send interest.";
+      setError(msg);
     }
   };
 

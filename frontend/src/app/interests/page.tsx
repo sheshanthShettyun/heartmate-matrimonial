@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useRouter } from "next/navigation";
-import { interestApi, Interest } from "@/lib/api";
+import { interestApi, Interest, profileApi, Profile } from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
 import { PixelButton } from "@/components/PixelButton";
 import { UserMenu } from "@/components/UserMenu";
@@ -16,6 +16,7 @@ function InterestsContent() {
   const [activeTab, setActiveTab] = useState<"received" | "sent">("received");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [profilePhotos, setProfilePhotos] = useState<Record<number, string>>({});
 
   const currentUserId = user?.userId;
   const isAdmin = currentUserId === 60 || user?.email === "admin@example.com";
@@ -25,24 +26,45 @@ function InterestsContent() {
     setLoading(true);
     setError("");
     try {
+      let allInterests: Interest[] = [];
       if (isAdmin) {
-        // Admin Mode: Aggregate system interests across candidate profiles
-        const allSent: Interest[] = [];
-        for (let uid = 1; uid <= 12; uid++) {
-          try {
-            const res = await interestApi.getSent(uid);
-            allSent.push(...res.data);
-          } catch {}
-        }
-        const uniqueSent = Array.from(new Map(allSent.map(i => [i.interestId, i])).values());
-        setSent(uniqueSent);
+        const results = await Promise.allSettled(
+          Array.from({ length: 13 }, (_, i) => interestApi.getSent(i + 1))
+        );
+        const allSent: Interest[] = results
+          .filter((r): r is PromiseFulfilledResult<any> => r.status === "fulfilled")
+          .flatMap(r => r.value.data);
+        allInterests = Array.from(new Map(allSent.map(i => [i.interestId, i])).values());
+        setSent(allInterests);
         setReceived([]);
       } else {
         const s = await interestApi.getSent(currentUserId);
         const r = await interestApi.getReceived(currentUserId);
         setSent(s.data);
         setReceived(r.data);
+        allInterests = [...s.data, ...r.data];
       }
+
+      // Fetch profile photos for all unique partner userIds
+      const partnerIds = new Set<number>();
+      allInterests.forEach(interest => {
+        if (interest.sender?.userId) partnerIds.add(interest.sender.userId);
+        if (interest.receiver?.userId) partnerIds.add(interest.receiver.userId);
+      });
+
+      const photoResults = await Promise.allSettled(
+        Array.from(partnerIds).map(id => profileApi.getByUserId(id))
+      );
+      const photoMap: Record<number, string> = {};
+      photoResults.forEach(result => {
+        if (result.status === "fulfilled") {
+          const profile = result.value.data;
+          if (profile.user?.userId && profile.photoUrl) {
+            photoMap[profile.user.userId] = profile.photoUrl;
+          }
+        }
+      });
+      setProfilePhotos(photoMap);
     } catch {
       setError("Failed to load interests from database");
     } finally {
@@ -143,6 +165,8 @@ function InterestsContent() {
         {/* Display List */}
         {!loading && displayed.map((interest) => {
           const partner = activeTab === "received" ? interest.sender : interest.receiver;
+          const partnerUserId = partner?.userId;
+          const photoUrl = partnerUserId ? profilePhotos[partnerUserId] : undefined;
           const statusColor =
             interest.status === "ACCEPTED"
               ? "#27ae60"
@@ -164,7 +188,18 @@ function InterestsContent() {
               }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-                <PixelAvatar gender={partner?.name === "Priya Patel" ? "Female" : "Male"} size="card" />
+                <PixelAvatar
+                  gender={
+                    (interest as any).senderProfile?.gender ||
+                    (interest as any).receiverProfile?.gender ||
+                    ["Priya", "Ananya", "Meera", "Diya", "Isha", "Nisha", "Aditi"].some(n =>
+                      partner?.name?.includes(n)
+                    ) ? "Female" : "Male"
+                  }
+                  photoUrl={photoUrl}
+                  name={partner?.name}
+                  size="card"
+                />
                 <div>
                   <h3 style={{ fontFamily: "Press Start 2P", fontSize: "0.65rem", color: "var(--pixel-pink)", margin: "0 0 0.3rem" }}>
                     {partner?.name || "Unknown Candidate"}

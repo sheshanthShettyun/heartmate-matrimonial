@@ -629,7 +629,8 @@ body {
 .pixel-avatar-image {
   width: calc(58px * var(--avatar-scale));
   height: calc(58px * var(--avatar-scale));
-  image-rendering: pixelated;
+  object-fit: cover;
+  border-radius: calc(2px * var(--avatar-scale));
 }
 
 @media (max-width: 620px) {

@@ -64,6 +64,7 @@ export interface Profile {
   education?: string;
   occupation?: string;
   about?: string;
+  photoUrl?: string;
 }
 
 export const profileApi = {
@@ -99,3 +100,14 @@ export const interestApi = {
 };
 
 export default api;
+
+// ===== File Upload =====
+export const uploadApi = {
+  profilePhoto: (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    return api.post<{ url: string; filename: string }>("/upload/profile-photo", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+  },
+};

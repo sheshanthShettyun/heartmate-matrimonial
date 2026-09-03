@@ -1,5 +1,6 @@
 package com.matrimonial.service;
 
+import com.matrimonial.dto.ProfileRequest;
 import com.matrimonial.entity.Profile;
 import com.matrimonial.entity.User;
 import com.matrimonial.exception.ProfileNotFoundException;
@@ -19,12 +20,16 @@ public class ProfileService {
         this.userService = userService;
     }
 
-    public Profile createProfile(Long userId, Profile profile) {
+    /**
+     * FIX BUG-06: Now accepts ProfileRequest DTO instead of raw Profile entity.
+     * Manually maps only safe user-submitted fields to the Profile entity.
+     */
+    public Profile createProfile(Long userId, ProfileRequest request) {
         User user = userService.getUserById(userId);
         if (profileRepository.findByUserUserId(userId).isPresent()) {
             throw new IllegalArgumentException("This user already has a profile");
         }
-        validateProfile(profile);
+        Profile profile = mapRequestToProfile(request, new Profile());
         profile.setUser(user);
         return profileRepository.save(profile);
     }
@@ -47,15 +52,12 @@ public class ProfileService {
         return profileRepository.searchProfiles(emptyToNull(gender), emptyToNull(city), age);
     }
 
-    public Profile updateProfile(Long profileId, Profile updatedProfile) {
+    /**
+     * FIX BUG-06: Now accepts ProfileRequest DTO instead of raw Profile entity.
+     */
+    public Profile updateProfile(Long profileId, ProfileRequest request) {
         Profile existingProfile = getProfileById(profileId);
-        validateProfile(updatedProfile);
-        existingProfile.setAge(updatedProfile.getAge());
-        existingProfile.setGender(updatedProfile.getGender());
-        existingProfile.setCity(updatedProfile.getCity());
-        existingProfile.setEducation(updatedProfile.getEducation());
-        existingProfile.setOccupation(updatedProfile.getOccupation());
-        existingProfile.setAbout(updatedProfile.getAbout());
+        mapRequestToProfile(request, existingProfile);
         return profileRepository.save(existingProfile);
     }
 
@@ -64,16 +66,24 @@ public class ProfileService {
         profileRepository.delete(profile);
     }
 
-    private void validateProfile(Profile profile) {
-        if (profile.getAge() == null || profile.getAge() < 18) {
+    private Profile mapRequestToProfile(ProfileRequest request, Profile profile) {
+        if (request.getAge() == null || request.getAge() < 18) {
             throw new IllegalArgumentException("Age must be 18 or above");
         }
-        if (profile.getGender() == null || profile.getGender().isBlank()) {
+        if (request.getGender() == null || request.getGender().isBlank()) {
             throw new IllegalArgumentException("Gender is required");
         }
-        if (profile.getCity() == null || profile.getCity().isBlank()) {
+        if (request.getCity() == null || request.getCity().isBlank()) {
             throw new IllegalArgumentException("City is required");
         }
+        profile.setAge(request.getAge());
+        profile.setGender(request.getGender());
+        profile.setCity(request.getCity());
+        profile.setEducation(request.getEducation());
+        profile.setOccupation(request.getOccupation());
+        profile.setAbout(request.getAbout());
+        profile.setPhotoUrl(request.getPhotoUrl());
+        return profile;
     }
 
     private String emptyToNull(String value) {

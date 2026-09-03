@@ -33,6 +33,9 @@ public class Profile {
     @Column(length = 1000)
     private String about;
 
+    @Column(length = 500)
+    private String photoUrl;
+
     public Profile() {
     }
 
@@ -59,4 +62,7 @@ public class Profile {
 
     public String getAbout() { return about; }
     public void setAbout(String about) { this.about = about; }
+
+    public String getPhotoUrl() { return photoUrl; }
+    public void setPhotoUrl(String photoUrl) { this.photoUrl = photoUrl; }
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { PixelButton } from "@/components/PixelButton";
@@ -29,6 +30,23 @@ const crudSections = [
 export default function AdminPage() {
   const router = useRouter();
   const { user } = useAuth();
+  const isAdmin = user?.userId === 60 || user?.email === "admin@example.com";
+
+  useEffect(() => {
+    if (user && !isAdmin) {
+      router.push("/");
+    }
+  }, [user, isAdmin, router]);
+
+  if (!user || !isAdmin) {
+    return (
+      <main className="match-page" style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <p style={{ fontFamily: "Press Start 2P", fontSize: "0.6rem", color: "var(--pixel-ink)" }}>
+          {"You don't have admin access."}
+        </p>
+      </main>
+    );
+  }
 
   const openSection = (path: string) => {
     router.push(path);

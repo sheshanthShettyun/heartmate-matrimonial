@@ -28,7 +28,7 @@ export function ProfileCard({
 
   return (
     <div className="pixel-border pixel-card profile-card">
-      <PixelAvatar gender={profile.gender} />
+      <PixelAvatar gender={profile.gender} photoUrl={profile.photoUrl} name={profile.user?.name} />
       <div className="profile-card-content">
         <h3 className="profile-card-name">
           {profile.user?.name || "Unknown"}

@@ -5,6 +5,7 @@ import com.matrimonial.entity.User;
 import com.matrimonial.exception.InterestNotFoundException;
 import com.matrimonial.repository.InterestRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -23,6 +24,9 @@ public class InterestService {
         this.userService = userService;
     }
 
+    // FIX ISSUE-20: @Transactional prevents race condition between the duplicate
+    // existence check and the save — concurrent duplicate sends are blocked at DB level.
+    @Transactional
     public Interest sendInterest(Long senderId, Long receiverId) {
         if (senderId.equals(receiverId)) {
             throw new IllegalArgumentException("A user cannot send interest to themselves");
@@ -48,14 +52,17 @@ public class InterestService {
         return interestRepository.findByReceiverUserId(receiverId);
     }
 
+    @Transactional
     public Interest acceptInterest(Long interestId) {
         return updateStatus(interestId, ACCEPTED);
     }
 
+    @Transactional
     public Interest rejectInterest(Long interestId) {
         return updateStatus(interestId, REJECTED);
     }
 
+    @Transactional
     public void deleteInterest(Long interestId) {
         Interest interest = getInterestById(interestId);
         interestRepository.delete(interest);
