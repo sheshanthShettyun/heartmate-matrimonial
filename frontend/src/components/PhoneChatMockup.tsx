@@ -33,7 +33,7 @@ export function PhoneChatMockup() {
   }, [messages, isOpen]);
 
   const showCallToast = (type: "voice" | "video") => {
-    setToastMessage(`${type === "voice" ? "📞 Voice Call" : "📹 Video Call"} feature coming soon! 😉`);
+    setToastMessage(`${type === "voice" ? "📞 VOICE CALL" : "📹 VIDEO CALL"} COMING SOON! 😉`);
     setTimeout(() => setToastMessage(""), 3500);
   };
 
@@ -50,7 +50,6 @@ export function PhoneChatMockup() {
     setLoading(true);
 
     try {
-      // Map message history for Sarvam AI
       const apiHistory = newMsgList.map(m => ({
         role: m.sender === "user" ? "user" : "assistant",
         content: m.text
@@ -89,136 +88,156 @@ export function PhoneChatMockup() {
   };
 
   return (
-    <div style={{ position: "fixed", bottom: "20px", right: "20px", zIndex: 9999, fontFamily: "sans-serif" }}>
-      {/* Floating Toggle Phone Icon when closed */}
+    <div style={{ position: "fixed", bottom: "20px", right: "20px", zIndex: 9999, fontFamily: "'Press Start 2P', monospace" }}>
+      {/* Floating 8-bit Retro Phone Button when closed */}
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
+          className="pixel-button"
           style={{
-            background: "linear-gradient(135deg, #e8658a, #ff007f)",
+            background: "var(--pixel-pink)",
             color: "#fff",
-            border: "4px solid #fff",
-            borderRadius: "30px",
-            padding: "12px 24px",
+            border: "4px solid var(--pixel-pink-deep)",
+            boxShadow: "6px 6px 0 var(--pixel-pink-deep)",
+            padding: "12px 18px",
             display: "flex",
             alignItems: "center",
             gap: "10px",
-            fontSize: "14px",
-            fontWeight: "bold",
-            boxShadow: "0 8px 24px rgba(232, 101, 138, 0.5)",
-            cursor: "pointer",
-            transition: "transform 0.2s ease"
+            fontSize: "0.55rem",
+            cursor: "pointer"
           }}
         >
-          <span style={{ fontSize: "20px" }}>📱</span>
-          <span>Chat with Match (Priya)</span>
-          <span style={{ width: "10px", height: "10px", borderRadius: "50%", background: "#2ecc71" }} />
+          <span style={{ fontSize: "1rem" }}>📱</span>
+          <span>CHAT WITH PRIYA</span>
+          <span style={{ width: "8px", height: "8px", background: "#27ae60", border: "2px solid #fff" }} />
         </button>
       )}
 
-      {/* Smartphone Mockup Container when open */}
+      {/* 8-bit Pixel Smartphone Frame when open */}
       {isOpen && (
         <div
           style={{
             width: "360px",
-            height: "640px",
-            background: "#1e1e24",
-            borderRadius: "44px",
-            border: "12px solid #2d2d35",
-            boxShadow: "0 20px 50px rgba(0, 0, 0, 0.4), 0 0 0 2px rgba(255, 255, 255, 0.1)",
+            height: "580px",
+            background: "#fff5ee",
+            border: "6px solid var(--pixel-pink-deep)",
+            boxShadow: "10px 10px 0 var(--pixel-pink-deep)",
             display: "flex",
             flexDirection: "column",
-            overflow: "hidden",
-            position: "relative"
+            position: "relative",
+            imageRendering: "pixelated"
           }}
         >
-          {/* Top Camera Island / Speaker */}
-          <div style={{ background: "#2d2d35", height: "26px", width: "100%", display: "flex", justifyContent: "center", alignItems: "center", position: "relative" }}>
-            <div style={{ width: "90px", height: "16px", background: "#111", borderRadius: "10px", display: "flex", justifyContent: "flex-end", paddingRight: "8px", alignItems: "center" }}>
-              <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#1a1a2e", border: "1px solid #333" }} />
-            </div>
+          {/* Top Pixel Speaker / Notch Bar */}
+          <div style={{ background: "var(--pixel-pink-deep)", height: "24px", width: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
+            <div style={{ width: "80px", height: "8px", background: "#fff5ee", border: "2px solid #3d2626" }} />
           </div>
 
-          {/* Phone Header Bar */}
-          <div style={{ background: "#e8658a", color: "#fff", padding: "10px 14px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-              <div style={{ position: "relative", width: "38px", height: "38px", borderRadius: "50%", overflow: "hidden", border: "2px solid #fff", background: "#fff" }}>
-                <Image src="/avatar-girl.png" alt="Priya" width={38} height={38} style={{ objectFit: "cover" }} />
+          {/* 8-bit Header Bar */}
+          <div style={{ background: "var(--pixel-pink-soft)", borderBottom: "4px solid var(--pixel-pink-deep)", padding: "10px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <div style={{ width: "36px", height: "36px", border: "3px solid var(--pixel-pink-deep)", background: "#ffe6b0", overflow: "hidden", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                <Image src="/avatar-girl.png" alt="Priya" width={36} height={36} style={{ imageRendering: "pixelated" }} />
               </div>
               <div>
-                <h4 style={{ margin: 0, fontSize: "14px", fontWeight: 700 }}>Priya Patel</h4>
-                <div style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "11px", opacity: 0.9 }}>
-                  <span style={{ width: "7px", height: "7px", borderRadius: "50%", background: "#2ecc71", display: "inline-block" }} />
-                  <span>Online</span>
+                <h4 style={{ margin: "0 0 4px 0", fontSize: "0.55rem", color: "var(--pixel-pink-deep)" }}>Priya Patel</h4>
+                <div style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "0.45rem", color: "#27ae60" }}>
+                  <span>■</span>
+                  <span>ONLINE</span>
                 </div>
               </div>
             </div>
 
-            {/* Action Icons */}
-            <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+            {/* 8-bit Retro Action Buttons */}
+            <div style={{ display: "flex", gap: "6px" }}>
               <button 
                 onClick={() => showCallToast("voice")}
-                style={{ background: "rgba(255,255,255,0.2)", border: "none", color: "#fff", borderRadius: "50%", width: "32px", height: "32px", cursor: "pointer", fontSize: "14px" }}
+                style={{
+                  background: "var(--pixel-blue)",
+                  color: "#fff",
+                  border: "2px solid var(--pixel-ink)",
+                  boxShadow: "2px 2px 0 var(--pixel-ink)",
+                  padding: "4px 6px",
+                  fontSize: "0.45rem",
+                  cursor: "pointer",
+                  fontFamily: "'Press Start 2P', monospace"
+                }}
                 title="Voice Call"
               >
-                📞
+                📞 CALL
               </button>
               <button 
                 onClick={() => showCallToast("video")}
-                style={{ background: "rgba(255,255,255,0.2)", border: "none", color: "#fff", borderRadius: "50%", width: "32px", height: "32px", cursor: "pointer", fontSize: "14px" }}
+                style={{
+                  background: "var(--pixel-pink)",
+                  color: "#fff",
+                  border: "2px solid var(--pixel-ink)",
+                  boxShadow: "2px 2px 0 var(--pixel-ink)",
+                  padding: "4px 6px",
+                  fontSize: "0.45rem",
+                  cursor: "pointer",
+                  fontFamily: "'Press Start 2P', monospace"
+                }}
                 title="Video Call"
               >
-                📹
+                📹 VIDEO
               </button>
               <button 
                 onClick={() => setIsOpen(false)}
-                style={{ background: "rgba(255,255,255,0.2)", border: "none", color: "#fff", borderRadius: "50%", width: "32px", height: "32px", cursor: "pointer", fontSize: "14px" }}
-                title="Minimize Phone"
+                style={{
+                  background: "#e74c3c",
+                  color: "#fff",
+                  border: "2px solid var(--pixel-ink)",
+                  boxShadow: "2px 2px 0 var(--pixel-ink)",
+                  padding: "4px 6px",
+                  fontSize: "0.45rem",
+                  cursor: "pointer",
+                  fontFamily: "'Press Start 2P', monospace"
+                }}
               >
                 ✕
               </button>
             </div>
           </div>
 
-          {/* Notification Toast for Call / Video Call */}
+          {/* Notification Toast */}
           {toastMessage && (
             <div
               style={{
                 position: "absolute",
-                top: "70px",
+                top: "60px",
                 left: "50%",
                 transform: "translateX(-50%)",
-                background: "rgba(0,0,0,0.85)",
-                color: "#ff7eb3",
-                padding: "8px 16px",
-                borderRadius: "20px",
-                fontSize: "12px",
+                background: "#ffe6b0",
+                color: "var(--pixel-pink-deep)",
+                border: "3px solid var(--pixel-pink-deep)",
+                boxShadow: "4px 4px 0 var(--pixel-pink-deep)",
+                padding: "6px 12px",
+                fontSize: "0.42rem",
                 zIndex: 10,
                 textAlign: "center",
-                whiteSpace: "nowrap",
-                border: "1px solid #ff7eb3",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.3)"
+                whiteSpace: "nowrap"
               }}
             >
               {toastMessage}
             </div>
           )}
 
-          {/* Chat Messages Scrolling Container */}
+          {/* 8-bit Chat Messages Scrolling Container */}
           <div
             style={{
               flex: 1,
-              background: "#faf3f5",
-              padding: "14px",
+              background: "#ffd6e233",
+              padding: "12px",
               overflowY: "auto",
               display: "flex",
               flexDirection: "column",
               gap: "10px"
             }}
           >
-            <div style={{ textAlign: "center", margin: "6px 0" }}>
-              <span style={{ background: "#e8d8de", color: "#666", fontSize: "10px", padding: "3px 10px", borderRadius: "10px" }}>
-                Matched on HeartMate ♥
+            <div style={{ textAlign: "center", margin: "4px 0" }}>
+              <span style={{ background: "var(--pixel-pink-soft)", border: "2px solid var(--pixel-pink)", color: "var(--pixel-pink-deep)", fontSize: "0.4rem", padding: "4px 8px" }}>
+                ♥ MATCHED ON HEARTMATE ♥
               </span>
             </div>
 
@@ -227,30 +246,28 @@ export function PhoneChatMockup() {
                 key={idx}
                 style={{
                   alignSelf: m.sender === "user" ? "flex-end" : "flex-start",
-                  maxWidth: "80%"
+                  maxWidth: "85%"
                 }}
               >
                 <div
                   style={{
-                    background: m.sender === "user" ? "linear-gradient(135deg, #e8658a, #ff007f)" : "#ffffff",
-                    color: m.sender === "user" ? "#ffffff" : "#2d2d35",
-                    padding: "10px 14px",
-                    borderRadius: m.sender === "user" ? "16px 16px 2px 16px" : "16px 16px 16px 2px",
-                    fontSize: "13px",
-                    lineHeight: "1.4",
-                    boxShadow: "0 2px 5px rgba(0,0,0,0.06)",
-                    border: m.sender === "partner" ? "1px solid #eee" : "none"
+                    background: m.sender === "user" ? "var(--pixel-pink)" : "#ffffff",
+                    color: m.sender === "user" ? "#ffffff" : "var(--pixel-ink)",
+                    border: "3px solid var(--pixel-pink-deep)",
+                    boxShadow: "3px 3px 0 var(--pixel-pink-deep)",
+                    padding: "8px 10px",
+                    fontSize: "0.48rem",
+                    lineHeight: "1.6"
                   }}
                 >
                   {m.text}
                 </div>
                 <div
                   style={{
-                    fontSize: "9px",
-                    color: "#999",
-                    marginTop: "3px",
-                    textAlign: m.sender === "user" ? "right" : "left",
-                    padding: "0 4px"
+                    fontSize: "0.38rem",
+                    color: "var(--pixel-pink-deep)",
+                    marginTop: "4px",
+                    textAlign: m.sender === "user" ? "right" : "left"
                   }}
                 >
                   {m.time}
@@ -259,22 +276,22 @@ export function PhoneChatMockup() {
             ))}
 
             {loading && (
-              <div style={{ alignSelf: "flex-start", background: "#fff", padding: "8px 14px", borderRadius: "16px", fontSize: "12px", color: "#888", border: "1px solid #eee" }}>
-                <span>Priya is typing... 💬</span>
+              <div style={{ alignSelf: "flex-start", background: "#fff", border: "2px solid var(--pixel-pink-deep)", padding: "6px 10px", fontSize: "0.45rem", color: "var(--pixel-pink-deep)" }}>
+                <span>TYPING... 💬</span>
               </div>
             )}
             <div ref={chatEndRef} />
           </div>
 
-          {/* Bottom Chat Input Form */}
+          {/* 8-bit Bottom Input Form */}
           <form
             onSubmit={handleSend}
             style={{
-              background: "#fff",
-              padding: "10px",
+              background: "var(--pixel-pink-soft)",
+              borderTop: "4px solid var(--pixel-pink-deep)",
+              padding: "8px",
               display: "flex",
-              gap: "8px",
-              borderTop: "1px solid #eee",
+              gap: "6px",
               alignItems: "center"
             }}
           >
@@ -285,10 +302,11 @@ export function PhoneChatMockup() {
               placeholder="Type in Hinglish..."
               style={{
                 flex: 1,
-                border: "1px solid #e0e0e0",
-                borderRadius: "20px",
-                padding: "8px 14px",
-                fontSize: "13px",
+                background: "#fff",
+                border: "3px solid var(--pixel-pink-deep)",
+                padding: "8px",
+                fontSize: "0.45rem",
+                fontFamily: "'Press Start 2P', monospace",
                 outline: "none"
               }}
             />
@@ -296,27 +314,24 @@ export function PhoneChatMockup() {
               type="submit"
               disabled={loading || !input.trim()}
               style={{
-                background: "#e8658a",
+                background: "var(--pixel-pink)",
                 color: "#fff",
-                border: "none",
-                borderRadius: "50%",
-                width: "36px",
-                height: "36px",
+                border: "3px solid var(--pixel-pink-deep)",
+                boxShadow: "2px 2px 0 var(--pixel-pink-deep)",
+                padding: "8px 12px",
+                fontSize: "0.55rem",
+                fontFamily: "'Press Start 2P', monospace",
                 cursor: loading || !input.trim() ? "not-allowed" : "pointer",
-                opacity: loading || !input.trim() ? 0.6 : 1,
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                fontSize: "14px"
+                opacity: loading || !input.trim() ? 0.6 : 1
               }}
             >
               ➔
             </button>
           </form>
 
-          {/* Phone Bottom Home Bar Indicator */}
-          <div style={{ background: "#fff", height: "16px", display: "flex", justifyContent: "center", alignItems: "center" }}>
-            <div style={{ width: "110px", height: "4px", background: "#333", borderRadius: "2px" }} />
+          {/* Phone Bottom Bezel */}
+          <div style={{ background: "var(--pixel-pink-deep)", height: "16px", display: "flex", justifyContent: "center", alignItems: "center" }}>
+            <div style={{ width: "60px", height: "4px", background: "#fff" }} />
           </div>
         </div>
       )}
