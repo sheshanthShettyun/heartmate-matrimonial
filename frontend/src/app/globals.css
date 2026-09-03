@@ -858,3 +858,214 @@ body {
 .user-menu-close:hover {
   background: rgba(61, 38, 38, 0.1);
 }
+
+/* ===== AUTH PAGE DESIGN (MIRROR-MAGIC ALIGNED) ===== */
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-stage {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  padding: 3rem 1rem;
+}
+
+.auth-content {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.auth-brand {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.8rem;
+  margin: 0;
+  color: var(--pixel-pink-deep);
+  font-family: "Press Start 2P", monospace;
+  font-size: clamp(1.4rem, 3.2vw, 2.2rem);
+  text-shadow: 3px 3px 0 var(--pixel-cream);
+}
+
+.brand-heart {
+  color: var(--pixel-pink);
+  font-size: 0.8em;
+}
+
+.auth-tagline {
+  margin: 0.8rem 0 1.5rem;
+  color: var(--pixel-ink);
+  font-family: "Press Start 2P", monospace;
+  font-size: clamp(0.55rem, 1vw, 0.7rem);
+}
+
+.auth-card {
+  width: 100%;
+  overflow: hidden;
+  padding: 1.5rem;
+  border-radius: 1.25rem;
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 8px 0 var(--pixel-shadow);
+}
+
+.auth-slider {
+  display: flex;
+  width: 100%;
+  transition: transform 480ms cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.auth-card.mode-login .auth-slider {
+  transform: translateX(0);
+}
+
+.auth-card.mode-signup .auth-slider {
+  transform: translateX(-100%);
+}
+
+.auth-panel {
+  flex: 0 0 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding: 0 0.25rem;
+  transition: opacity 320ms ease;
+  box-sizing: border-box;
+}
+
+.auth-panel[aria-hidden="true"] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.auth-panel-title {
+  margin: 0;
+  color: var(--pixel-pink-deep);
+  font-family: "Press Start 2P", monospace;
+  font-size: clamp(0.75rem, 1.5vw, 1rem);
+}
+
+.auth-panel-sub {
+  margin: -0.2rem 0 0.4rem;
+  color: var(--pixel-ink);
+  font-family: "Press Start 2P", monospace;
+  font-size: 0.55rem;
+  line-height: 1.7;
+}
+
+.pixel-field-icon {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 48px;
+  padding: 0 0.75rem;
+  border: 3px solid var(--pixel-pink);
+  border-radius: 0.35rem;
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 4px 0 var(--pixel-shadow);
+  text-align: left;
+  box-sizing: border-box;
+}
+
+.pixel-field-icon svg {
+  width: 1rem;
+  height: 1rem;
+  color: var(--pixel-pink);
+  flex: none;
+}
+
+.pixel-field-icon input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--pixel-ink);
+  font-family: "Press Start 2P", monospace;
+  font-size: 0.58rem;
+}
+
+.field-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: var(--pixel-pink);
+  cursor: pointer;
+  padding: 0;
+}
+
+.auth-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.2rem;
+}
+
+.pixel-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--pixel-ink);
+  font-family: "Press Start 2P", monospace;
+  font-size: 0.48rem;
+  line-height: 1.6;
+  text-align: left;
+  cursor: pointer;
+}
+
+.pixel-check input {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  accent-color: var(--pixel-pink);
+  cursor: pointer;
+}
+
+.pixel-link {
+  border: none;
+  background: transparent;
+  color: var(--pixel-pink-deep);
+  font-family: "Press Start 2P", monospace;
+  font-size: 0.48rem;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.pixel-link:hover {
+  color: var(--pixel-pink);
+}
+
+.auth-submit {
+  margin-top: 0.5rem;
+  width: 100%;
+}
+
+.auth-switch {
+  margin-top: 0.8rem;
+  font-family: "Press Start 2P", monospace;
+  font-size: 0.48rem;
+  color: var(--pixel-ink);
+}
+
+.auth-footer-hearts {
+  margin-top: 1.5rem;
+  color: var(--pixel-pink);
+  font-family: "Press Start 2P", monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.5rem;
+}
+
