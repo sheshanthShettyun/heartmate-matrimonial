@@ -34,10 +34,25 @@ function InterestsContent() {
     setLoading(true);
     setError("");
     try {
-      const s = await interestApi.getSent(parseInt(idToFetch));
-      const r = await interestApi.getReceived(parseInt(idToFetch));
-      setSent(s.data);
-      setReceived(r.data);
+      if (idToFetch === "60") {
+        // Admin Mode: Aggregate system interests across users 1 to 12
+        const allSent: Interest[] = [];
+        for (let uid = 1; uid <= 12; uid++) {
+          try {
+            const res = await interestApi.getSent(uid);
+            allSent.push(...res.data);
+          } catch {}
+        }
+        // Deduplicate by interestId
+        const uniqueSent = Array.from(new Map(allSent.map(i => [i.interestId, i])).values());
+        setSent(uniqueSent);
+        setReceived([]);
+      } else {
+        const s = await interestApi.getSent(parseInt(idToFetch));
+        const r = await interestApi.getReceived(parseInt(idToFetch));
+        setSent(s.data);
+        setReceived(r.data);
+      }
     } catch {
       setError("Failed to load interests from database");
     } finally {
@@ -138,10 +153,12 @@ function InterestsContent() {
                   <PixelAvatar gender={activeTab === "sent" ? "Female" : "Male"} size="card" />
                   <div>
                     <h3 style={{ fontFamily: "Press Start 2P", fontSize: "0.65rem", color: "var(--pixel-pink-deep)", margin: "0 0 0.4rem" }}>
-                      {otherUser?.name || `User #${otherUser?.userId}`}
+                      {userId === "60" 
+                        ? `${i.sender?.name || `User #${i.sender?.userId}`} ➔ ${i.receiver?.name || `User #${i.receiver?.userId}`}` 
+                        : (otherUser?.name || `User #${otherUser?.userId}`)}
                     </h3>
                     <p style={{ fontFamily: "Press Start 2P", fontSize: "0.45rem", color: "var(--pixel-ink)", margin: "0 0 0.4rem" }}>
-                      {otherUser?.email}
+                      {userId === "60" ? `Interest ID #${i.interestId} | Sender: ${i.sender?.email}` : otherUser?.email}
                     </p>
                     <span style={{
                       fontFamily: "Press Start 2P", 
