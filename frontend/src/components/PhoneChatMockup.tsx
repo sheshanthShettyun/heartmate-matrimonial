@@ -35,7 +35,7 @@ export function PhoneChatMockup() {
 
     const onMatch = () => {
       setVisible(true);
-      setIsOpen(true);
+      setIsOpen(false);
     };
 
     const onReset = () => {
