@@ -30,6 +30,7 @@ export function PhoneChatMockup() {
     if (typeof window !== "undefined") {
       if (localStorage.getItem("isMatched") === "true") {
         setVisible(true);
+        setIsOpen(false);
       }
     }
 
