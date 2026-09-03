@@ -52,12 +52,6 @@ export function UserMenu() {
           </button>
           <button 
             className="user-menu-item" 
-            onClick={() => window.open("http://localhost:8080/swagger-ui/index.html", "_blank")}
-          >
-            Swagger Docs 📖
-          </button>
-          <button 
-            className="user-menu-item" 
             style={{ color: "#e74c3c" }}
             onClick={() => {
               if (typeof window !== "undefined") {
