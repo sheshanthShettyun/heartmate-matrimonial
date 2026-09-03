@@ -3,8 +3,10 @@ package com.matrimonial.service;
 import com.matrimonial.entity.User;
 import com.matrimonial.exception.DuplicateEmailException;
 import com.matrimonial.exception.UserNotFoundException;
+import com.matrimonial.repository.InterestRepository;
 import com.matrimonial.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -12,9 +14,11 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final InterestRepository interestRepository;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, InterestRepository interestRepository) {
         this.userRepository = userRepository;
+        this.interestRepository = interestRepository;
     }
 
     public User createUser(User user) {
@@ -41,13 +45,28 @@ public class UserService {
 
     public User updateUser(Long userId, User updatedUser) {
         User existingUser = getUserById(userId);
+        
+        if (updatedUser.getName() == null || updatedUser.getName().isBlank()) {
+            throw new IllegalArgumentException("Name is required");
+        }
+        if (updatedUser.getEmail() == null || updatedUser.getEmail().isBlank()) {
+            throw new IllegalArgumentException("Email is required");
+        }
+        
+        if (!existingUser.getEmail().equalsIgnoreCase(updatedUser.getEmail()) &&
+                userRepository.existsByEmail(updatedUser.getEmail())) {
+            throw new DuplicateEmailException("Email already registered: " + updatedUser.getEmail());
+        }
+
         existingUser.setName(updatedUser.getName());
         existingUser.setEmail(updatedUser.getEmail());
         return userRepository.save(existingUser);
     }
 
+    @Transactional
     public void deleteUser(Long userId) {
         User user = getUserById(userId);
+        interestRepository.deleteBySenderUserIdOrReceiverUserId(userId, userId);
         userRepository.delete(user);
     }
 }

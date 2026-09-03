@@ -1,13 +1,14 @@
 package com.matrimonial.controller;
 
+import com.matrimonial.dto.SendInterestRequest;
 import com.matrimonial.entity.Interest;
 import com.matrimonial.service.InterestService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/interests")
@@ -20,8 +21,8 @@ public class InterestController {
     }
 
     @PostMapping("/send")
-    public ResponseEntity<Interest> sendInterest(@RequestBody Map<String, Long> request) {
-        Interest interest = interestService.sendInterest(request.get("senderId"), request.get("receiverId"));
+    public ResponseEntity<Interest> sendInterest(@Valid @RequestBody SendInterestRequest request) {
+        Interest interest = interestService.sendInterest(request.getSenderId(), request.getReceiverId());
         return new ResponseEntity<>(interest, HttpStatus.CREATED);
     }
 
@@ -41,14 +42,13 @@ public class InterestController {
     }
 
     @PutMapping("/{interestId}/reject")
-    public ResponseEntity<Map<String, String>> rejectInterest(@PathVariable Long interestId) {
-        interestService.deleteInterest(interestId);
-        return ResponseEntity.ok(Map.of("message", "Interest rejected successfully"));
+    public ResponseEntity<Interest> rejectInterest(@PathVariable Long interestId) {
+        return ResponseEntity.ok(interestService.rejectInterest(interestId));
     }
 
     @DeleteMapping("/{interestId}")
-    public ResponseEntity<Map<String, String>> deleteInterest(@PathVariable Long interestId) {
+    public ResponseEntity<Void> deleteInterest(@PathVariable Long interestId) {
         interestService.deleteInterest(interestId);
-        return ResponseEntity.ok(Map.of("message", "Interest deleted successfully"));
+        return ResponseEntity.noContent().build();
     }
 }

@@ -29,21 +29,16 @@ public class ProfileController {
         return ResponseEntity.ok(profileService.getAllProfiles());
     }
 
-    @GetMapping("/{profileId}")
-    public ResponseEntity<Profile> getProfileById(@PathVariable Long profileId) {
-        return ResponseEntity.ok(profileService.getProfileById(profileId));
-    }
-
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<Profile> getProfileByUserId(@PathVariable Long userId) {
-        return ResponseEntity.ok(profileService.getProfileByUserId(userId));
-    }
-
     @GetMapping("/search")
     public ResponseEntity<List<Profile>> searchProfiles(@RequestParam(required = false) String gender,
                                                         @RequestParam(required = false) String city,
                                                         @RequestParam(required = false) Integer age) {
         return ResponseEntity.ok(profileService.searchProfiles(gender, city, age));
+    }
+
+    @GetMapping("/{profileId}")
+    public ResponseEntity<Profile> getProfileById(@PathVariable Long profileId) {
+        return ResponseEntity.ok(profileService.getProfileById(profileId));
     }
 
     @PutMapping("/{profileId}")

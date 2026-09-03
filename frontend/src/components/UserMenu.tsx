@@ -1,21 +1,20 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
 
 export function UserMenu() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const [userId, setUserId] = useState("");
-  const isAdmin = userId === "60";
+  const { user, profile, logout } = useAuth();
 
-  useEffect(() => {
-    setUserId(localStorage.getItem("userId") || "");
-  }, []);
+  if (!user) return null;
+
+  const isAdmin = user.userId === 60 || user.email === "admin@example.com";
 
   const go = (path: string) => {
-    if (!userId) return;
-    router.push(`${path}?userId=${userId}`);
+    router.push(path);
     setOpen(false);
   };
 
@@ -26,34 +25,40 @@ export function UserMenu() {
       </button>
       {open && (
         <div className="user-menu-dropdown pixel-border">
-          <p style={{ fontFamily: "Press Start 2P", fontSize: "0.45rem", color: "var(--pixel-pink)", marginBottom: "0.5rem" }}>
-            My Account
+          <p style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "0.45rem", color: "var(--pixel-pink)", marginBottom: "0.2rem" }}>
+            ACCOUNT DETAILS
           </p>
-          <input
-            className="pixel-input"
-            placeholder="Your User ID"
-            value={userId}
-            onChange={e => {
-              setUserId(e.target.value);
-              localStorage.setItem("userId", e.target.value);
-            }}
-            type="number"
-            min="1"
-            style={{ fontSize: "0.4rem", minHeight: 36, padding: "0 0.5rem", marginBottom: "0.75rem" }}
-          />
+          <p style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "0.5rem", color: "var(--pixel-ink)", margin: "0 0 0.2rem" }}>
+            {user.name}
+          </p>
+          <p style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "0.38rem", color: "var(--pixel-pink-deep)", margin: "0 0 0.75rem", wordBreak: "break-all" }}>
+            {user.email} (ID #{user.userId})
+          </p>
+
+          <button className="user-menu-item" onClick={() => go("/")}>
+            🏠 Home Catalog
+          </button>
+
           <button className="user-menu-item" onClick={() => go("/edit-profile")}>
-            Edit Profile
+            ✏️ Edit My Profile
           </button>
+          
           <button className="user-menu-item" onClick={() => go("/interests")}>
-            My Interests
+            💌 My Interests
           </button>
+
+          {isAdmin && (
+            <button className="user-menu-item" onClick={() => go("/admin")}>
+              👑 Admin Panel
+            </button>
+          )}
+
           <button 
             className="user-menu-item" 
             style={{ color: "#e74c3c" }}
             onClick={() => {
               if (typeof window !== "undefined") {
                 localStorage.removeItem("isMatched");
-                localStorage.setItem("userId", "1");
                 window.dispatchEvent(new CustomEvent("heartmate_reset"));
               }
               setOpen(false);
@@ -62,11 +67,11 @@ export function UserMenu() {
           >
             Reset Demo 🔄
           </button>
-          {isAdmin && (
-            <button className="user-menu-item" onClick={() => go("/admin")}>
-              Admin Panel
-            </button>
-          )}
+
+          <button className="user-menu-item" style={{ color: "#c0392b", fontWeight: "bold" }} onClick={() => logout()}>
+            🚪 Logout
+          </button>
+
           <button className="user-menu-close" onClick={() => setOpen(false)}>
             Close
           </button>

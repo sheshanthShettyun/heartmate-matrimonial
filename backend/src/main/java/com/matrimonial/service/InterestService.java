@@ -13,6 +13,7 @@ public class InterestService {
 
     private static final String PENDING = "PENDING";
     private static final String ACCEPTED = "ACCEPTED";
+    private static final String REJECTED = "REJECTED";
 
     private final InterestRepository interestRepository;
     private final UserService userService;
@@ -25,6 +26,9 @@ public class InterestService {
     public Interest sendInterest(Long senderId, Long receiverId) {
         if (senderId.equals(receiverId)) {
             throw new IllegalArgumentException("A user cannot send interest to themselves");
+        }
+        if (interestRepository.existsBySenderUserIdAndReceiverUserIdAndStatus(senderId, receiverId, PENDING)) {
+            throw new IllegalStateException("An interest request is already pending for this user");
         }
         User sender = userService.getUserById(senderId);
         User receiver = userService.getUserById(receiverId);
@@ -46,6 +50,10 @@ public class InterestService {
 
     public Interest acceptInterest(Long interestId) {
         return updateStatus(interestId, ACCEPTED);
+    }
+
+    public Interest rejectInterest(Long interestId) {
+        return updateStatus(interestId, REJECTED);
     }
 
     public void deleteInterest(Long interestId) {

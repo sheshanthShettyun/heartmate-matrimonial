@@ -2,7 +2,42 @@ import axios from "axios";
 
 const api = axios.create({
   baseURL: "http://localhost:8080/api",
+  withCredentials: true,
 });
+
+// 401 Interceptor: Redirect to /login on unauthorized response
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      if (typeof window !== "undefined") {
+        const path = window.location.pathname;
+        if (path !== "/login" && path !== "/register") {
+          window.location.href = "/login";
+        }
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
+// ===== Auth =====
+export interface AuthUser {
+  userId: number;
+  name: string;
+  email: string;
+  hasProfile: boolean;
+  profileId?: number | null;
+}
+
+export const authApi = {
+  register: (data: { name: string; email: string; password: String; confirmPassword: String }) =>
+    api.post<AuthUser>("/auth/register", data),
+  login: (data: { email: string; password: String }) =>
+    api.post<AuthUser>("/auth/login", data),
+  logout: () => api.post<{ message: string }>("/auth/logout"),
+  me: () => api.get<AuthUser>("/auth/me"),
+};
 
 // ===== Users =====
 export interface User {

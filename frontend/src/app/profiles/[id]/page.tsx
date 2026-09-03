@@ -7,11 +7,14 @@ import { PixelButton } from "@/components/PixelButton";
 import { ProfileCard } from "@/components/ProfileCard";
 import confetti from "canvas-confetti";
 
+import { useAuth } from "@/contexts/AuthContext";
+import { UserMenu } from "@/components/UserMenu";
+
 export default function ProfileDetailsPage() {
   const { id } = useParams();
   const router = useRouter();
+  const { user, profile: myProfile } = useAuth();
   const [targetProfile, setTargetProfile] = useState<Profile | null>(null);
-  const [myProfile, setMyProfile] = useState<Profile | null>(null);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [isMatched, setIsMatched] = useState(false);
@@ -27,14 +30,6 @@ export default function ProfileDetailsPage() {
         setTargetProfile(res.data);
       } catch {
         setError("Profile not found");
-      }
-
-      // Explicitly load Sriyaan (Profile ID 1) as "You"
-      try {
-        const myRes = await profileApi.getById(1);
-        setMyProfile(myRes.data);
-      } catch {
-        setMyProfile(null);
       }
     };
     load();
@@ -113,7 +108,11 @@ export default function ProfileDetailsPage() {
   };
 
   const handleSendInterest = async () => {
-    const senderId = 1; // Hardcoded as Sriyaan
+    const senderId = user?.userId;
+    if (!senderId) {
+      alert("Please log in to send interest");
+      return;
+    }
     if (senderId === targetProfile?.user?.userId) {
       alert("Cannot send interest to yourself");
       return;
@@ -155,6 +154,7 @@ export default function ProfileDetailsPage() {
 
   return (
     <main className="match-page" style={{ position: "relative", overflow: "hidden" }}>
+      <UserMenu />
       {/* Details Modal */}
       {showDetailsModal && targetProfile && (
         <div style={{
