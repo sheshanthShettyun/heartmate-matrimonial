@@ -78,6 +78,11 @@ export default function ProfileDetailsPage() {
     setShowMailNotification(false);
     setMessage("It's a Match! ♥");
     setIsMatched(true);
+
+    if (typeof window !== "undefined") {
+      localStorage.setItem("isMatched", "true");
+      window.dispatchEvent(new CustomEvent("heartmate_matched"));
+    }
     
     // Trigger confetti
     const end = Date.now() + 3 * 1000;

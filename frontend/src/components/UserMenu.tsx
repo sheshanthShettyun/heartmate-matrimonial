@@ -56,6 +56,21 @@ export function UserMenu() {
           >
             Swagger Docs 📖
           </button>
+          <button 
+            className="user-menu-item" 
+            style={{ color: "#e74c3c" }}
+            onClick={() => {
+              if (typeof window !== "undefined") {
+                localStorage.removeItem("isMatched");
+                localStorage.setItem("userId", "1");
+                window.dispatchEvent(new CustomEvent("heartmate_reset"));
+              }
+              setOpen(false);
+              router.push("/profiles/2");
+            }}
+          >
+            Reset Demo 🔄
+          </button>
           {isAdmin && (
             <button className="user-menu-item" onClick={() => go("/admin")}>
               Admin Panel

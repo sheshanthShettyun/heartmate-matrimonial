@@ -10,6 +10,7 @@ interface Message {
 }
 
 export function PhoneChatMockup() {
+  const [visible, setVisible] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [input, setInput] = useState("");
@@ -24,6 +25,40 @@ export function PhoneChatMockup() {
 
   const chatEndRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    // Check initial match state
+    if (typeof window !== "undefined") {
+      if (localStorage.getItem("isMatched") === "true") {
+        setVisible(true);
+      }
+    }
+
+    const onMatch = () => {
+      setVisible(true);
+      setIsOpen(true);
+    };
+
+    const onReset = () => {
+      setVisible(false);
+      setIsOpen(false);
+      setMessages([
+        {
+          sender: "partner",
+          text: "Aww, finally! 🤭 Match toh ho gaya... Ab batao pehli chai kab pila rahe ho? 😉",
+          time: "Just now"
+        }
+      ]);
+    };
+
+    window.addEventListener("heartmate_matched", onMatch);
+    window.addEventListener("heartmate_reset", onReset);
+
+    return () => {
+      window.removeEventListener("heartmate_matched", onMatch);
+      window.removeEventListener("heartmate_reset", onReset);
+    };
+  }, []);
+
   const scrollToBottom = () => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -31,6 +66,8 @@ export function PhoneChatMockup() {
   useEffect(() => {
     if (isOpen) scrollToBottom();
   }, [messages, isOpen]);
+
+  if (!visible) return null;
 
   const showCallToast = (type: "voice" | "video") => {
     setToastMessage(`${type === "voice" ? "📞 VOICE CALL" : "📹 VIDEO CALL"} COMING SOON! 😉`);
@@ -108,7 +145,7 @@ export function PhoneChatMockup() {
           }}
         >
           <span style={{ fontSize: "1rem" }}>📱</span>
-          <span>CHAT WITH PRIYA</span>
+          <span>CHAT *</span>
           <span style={{ width: "8px", height: "8px", background: "#27ae60", border: "2px solid #fff" }} />
         </button>
       )}
