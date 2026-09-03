@@ -12,8 +12,8 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
     Optional<Profile> findByUserUserId(Long userId);
 
     @Query("SELECT p FROM Profile p JOIN p.user u WHERE " +
-           "(:gender IS NULL OR LOWER(p.gender) = LOWER(:gender)) AND " +
-           "(:city IS NULL OR LOWER(p.city) = LOWER(:city)) AND " +
+           "(:gender IS NULL OR :gender = '' OR LOWER(p.gender) = LOWER(:gender)) AND " +
+           "(:city IS NULL OR :city = '' OR LOWER(p.city) = LOWER(:city)) AND " +
            "(:age IS NULL OR p.age = :age)")
     List<Profile> searchProfiles(@Param("gender") String gender,
                                  @Param("city") String city,
