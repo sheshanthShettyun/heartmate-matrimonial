@@ -91,7 +91,8 @@ export function AuthForm({ initialMode }: AuthFormProps) {
       });
       await register(res.data);
     } catch (err: any) {
-      setError(err.response?.data?.message || "Registration failed. Email may already be registered.");
+      const msg = err.response?.data?.message || "Registration failed. Email may already be registered.";
+      setError(msg);
     } finally {
       setLoading(false);
     }
