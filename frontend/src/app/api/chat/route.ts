@@ -4,7 +4,10 @@ export async function POST(req: Request) {
   try {
     const { messages, partnerName, partnerGender } = await req.json();
 
-    const apiKey = process.env.SARVAM_API_KEY || "YOUR_SARVAM_API_KEY";
+    const apiKey = process.env.SARVAM_API_KEY;
+    if (!apiKey) {
+      return NextResponse.json({ error: "SARVAM_API_KEY environment variable is not configured" }, { status: 500 });
+    }
 
     const systemPrompt = {
       role: "system",
