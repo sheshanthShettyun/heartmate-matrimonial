@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 interface Message {
   sender: "user" | "partner";
@@ -10,6 +11,7 @@ interface Message {
 }
 
 export function PhoneChatMockup() {
+  const pathname = usePathname();
   const [visible, setVisible] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
@@ -30,7 +32,8 @@ export function PhoneChatMockup() {
     if (typeof window !== "undefined") {
       if (localStorage.getItem("isMatched") === "true") {
         setVisible(true);
-        setIsOpen(false);
+      } else {
+        setVisible(false);
       }
     }
 
@@ -42,13 +45,6 @@ export function PhoneChatMockup() {
     const onReset = () => {
       setVisible(false);
       setIsOpen(false);
-      setMessages([
-        {
-          sender: "partner",
-          text: "Aww, finally! 🤭 Match toh ho gaya... Ab batao pehli chai kab pila rahe ho? 😉",
-          time: "Just now"
-        }
-      ]);
     };
 
     window.addEventListener("heartmate_matched", onMatch);
@@ -68,7 +64,14 @@ export function PhoneChatMockup() {
     if (isOpen) scrollToBottom();
   }, [messages, isOpen]);
 
-  if (!visible) return null;
+  if (
+    !visible ||
+    pathname === "/login" ||
+    pathname === "/register" ||
+    pathname === "/create-profile"
+  ) {
+    return null;
+  }
 
   const showCallToast = (type: "voice" | "video") => {
     setToastMessage(`${type === "voice" ? "📞 VOICE CALL" : "📹 VIDEO CALL"} COMING SOON! 😉`);
