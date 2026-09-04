@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import { profileApi } from "@/lib/api";
 
 export function UserMenu() {
   const router = useRouter();
@@ -11,11 +12,20 @@ export function UserMenu() {
 
   if (!user) return null;
 
-  const isAdmin = user.userId === 60 || user.email === "admin@example.com";
-
   const go = (path: string) => {
     router.push(path);
     setOpen(false);
+  };
+
+  const handleDeleteProfile = async () => {
+    if (!profile?.profileId) return;
+    if (!confirm("Delete your profile? This cannot be undone.")) return;
+    try {
+      await profileApi.delete(profile.profileId);
+      await logout();
+    } catch {
+      alert("Failed to delete profile.");
+    }
   };
 
   return (
@@ -47,9 +57,9 @@ export function UserMenu() {
             💌 My Interests
           </button>
 
-          {isAdmin && (
-            <button className="user-menu-item" onClick={() => go("/admin")}>
-              👑 Admin Panel
+          {profile?.profileId && (
+            <button className="user-menu-item" style={{ color: "#c0392b" }} onClick={handleDeleteProfile}>
+              🗑️ Delete Profile
             </button>
           )}
 

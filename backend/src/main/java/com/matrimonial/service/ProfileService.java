@@ -4,8 +4,11 @@ import com.matrimonial.dto.ProfileRequest;
 import com.matrimonial.entity.Profile;
 import com.matrimonial.entity.User;
 import com.matrimonial.exception.ProfileNotFoundException;
+import com.matrimonial.repository.InterestRepository;
 import com.matrimonial.repository.ProfileRepository;
+import com.matrimonial.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -13,10 +16,14 @@ import java.util.List;
 public class ProfileService {
 
     private final ProfileRepository profileRepository;
+    private final InterestRepository interestRepository;
+    private final UserRepository userRepository;
     private final UserService userService;
 
-    public ProfileService(ProfileRepository profileRepository, UserService userService) {
+    public ProfileService(ProfileRepository profileRepository, InterestRepository interestRepository, UserRepository userRepository, UserService userService) {
         this.profileRepository = profileRepository;
+        this.interestRepository = interestRepository;
+        this.userRepository = userRepository;
         this.userService = userService;
     }
 
@@ -61,9 +68,12 @@ public class ProfileService {
         return profileRepository.save(existingProfile);
     }
 
+    @Transactional
     public void deleteProfile(Long profileId) {
         Profile profile = getProfileById(profileId);
-        profileRepository.delete(profile);
+        Long userId = profile.getUser().getUserId();
+        interestRepository.deleteByUserId(userId);
+        userRepository.deleteById(userId);
     }
 
     private Profile mapRequestToProfile(ProfileRequest request, Profile profile) {

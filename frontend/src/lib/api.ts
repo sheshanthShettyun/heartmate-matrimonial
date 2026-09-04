@@ -39,20 +39,12 @@ export const authApi = {
   me: () => api.get<AuthUser>("/auth/me"),
 };
 
-// ===== Users =====
+// ===== User type (used by Profile/Interest) =====
 export interface User {
   userId?: number;
   name: string;
   email: string;
 }
-
-export const userApi = {
-  create: (data: User) => api.post<User>("/users", data),
-  getAll: () => api.get<User[]>("/users"),
-  getById: (id: number) => api.get<User>(`/users/${id}`),
-  update: (id: number, data: User) => api.put<User>(`/users/${id}`, data),
-  delete: (id: number) => api.delete(`/users/${id}`),
-};
 
 // ===== Profiles =====
 export interface Profile {

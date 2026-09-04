@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useRouter } from "next/navigation";
-import { interestApi, Interest, profileApi, Profile } from "@/lib/api";
+import { interestApi, Interest, profileApi } from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
 import { PixelButton } from "@/components/PixelButton";
 import { UserMenu } from "@/components/UserMenu";
@@ -19,31 +19,17 @@ function InterestsContent() {
   const [profilePhotos, setProfilePhotos] = useState<Record<number, string>>({});
 
   const currentUserId = user?.userId;
-  const isAdmin = currentUserId === 60 || user?.email === "admin@example.com";
 
   const loadInterests = async () => {
     if (!currentUserId) return;
     setLoading(true);
     setError("");
     try {
-      let allInterests: Interest[] = [];
-      if (isAdmin) {
-        const results = await Promise.allSettled(
-          Array.from({ length: 13 }, (_, i) => interestApi.getSent(i + 1))
-        );
-        const allSent: Interest[] = results
-          .filter((r): r is PromiseFulfilledResult<any> => r.status === "fulfilled")
-          .flatMap(r => r.value.data);
-        allInterests = Array.from(new Map(allSent.map(i => [i.interestId, i])).values());
-        setSent(allInterests);
-        setReceived([]);
-      } else {
-        const s = await interestApi.getSent(currentUserId);
-        const r = await interestApi.getReceived(currentUserId);
-        setSent(s.data);
-        setReceived(r.data);
-        allInterests = [...s.data, ...r.data];
-      }
+      const s = await interestApi.getSent(currentUserId);
+      const r = await interestApi.getReceived(currentUserId);
+      setSent(s.data);
+      setReceived(r.data);
+      const allInterests = [...s.data, ...r.data];
 
       // Fetch profile photos for all unique partner userIds
       const partnerIds = new Set<number>();
@@ -117,7 +103,7 @@ function InterestsContent() {
             ← Back to Catalog
           </PixelButton>
           <h1 className="pixel-page-title" style={{ margin: 0, fontSize: "1.1rem" }}>
-            {isAdmin ? "System Interests (Admin)" : "My Interests"}
+            My Interests
           </h1>
         </div>
 
@@ -235,7 +221,7 @@ function InterestsContent() {
                     </PixelButton>
                   </>
                 )}
-                {(isAdmin || activeTab === "sent") && (
+                {activeTab === "sent" && (
                   <PixelButton variant="danger" onClick={() => handleDelete(interest.interestId!)}>
                     Delete 🗑️
                   </PixelButton>

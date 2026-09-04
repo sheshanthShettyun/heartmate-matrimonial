@@ -18,7 +18,7 @@ const GENDER_OPTIONS = [
 
 function EditProfileContent() {
   const router = useRouter();
-  const { user, profile, refreshUser } = useAuth();
+  const { user, profile, refreshUser, logout } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [age, setAge] = useState("");
@@ -118,8 +118,7 @@ function EditProfileContent() {
     if (!profile || !profile.profileId || !confirm("Are you sure you want to delete your profile?")) return;
     try {
       await profileApi.delete(profile.profileId);
-      setMessage("Profile deleted.");
-      await refreshUser();
+      await logout();
     } catch {
       setError("Failed to delete profile");
     }

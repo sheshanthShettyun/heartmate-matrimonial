@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -19,6 +20,14 @@ public class FileUploadController {
     @Value("${app.upload.dir:uploads/profiles}")
     private String uploadDir;
 
+    private Path getUploadPath() {
+        Path configured = Paths.get(uploadDir);
+        if (configured.isAbsolute()) {
+            return configured;
+        }
+        return Paths.get(System.getProperty("user.dir"), uploadDir).toAbsolutePath();
+    }
+
     @PostMapping("/profile-photo")
     public ResponseEntity<?> uploadProfilePhoto(@RequestParam("file") MultipartFile file) {
         if (file.isEmpty()) {
@@ -31,7 +40,7 @@ public class FileUploadController {
         }
 
         try {
-            Path uploadPath = Paths.get(uploadDir);
+            Path uploadPath = getUploadPath();
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
             }
